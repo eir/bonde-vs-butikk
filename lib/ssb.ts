@@ -1,4 +1,4 @@
-import type { SSBResponse, FarmStats } from "./types";
+import type { SSBResponse, FarmStats, FarmInputCosts } from "./types";
 
 const SSB_API = "https://data.ssb.no/api/v0/no/table";
 
@@ -140,6 +140,32 @@ export async function fetchFarmStats(): Promise<FarmStats> {
     farmCount: extractYearlyValues(farmData),
     debtPerFarmer: extractYearlyValues(debtData),
     farmIncome: extractYearlyValues(incomeData),
+  };
+}
+
+/**
+ * Hent prisindekser for bondens innsatskostnader fra SSB tabell 03675.
+ * Bruker SITC-koder: 08 (dyrefor), 27 (gjødsel), 33 (drivstoff).
+ * Returnerer indeksverdier (2021=100) per år.
+ */
+export async function fetchFarmInputCosts(
+  fromYear = 2000
+): Promise<FarmInputCosts> {
+  const sitcCodes = ["SITC08", "SITC27", "SITC33"];
+  const results = await Promise.all(
+    sitcCodes.map((code) => fetchProducerPriceIndex(code, fromYear))
+  );
+
+  function mapToSeries(index: Map<number, number>): { year: number; value: number }[] {
+    return Array.from(index.entries())
+      .map(([year, value]) => ({ year, value }))
+      .sort((a, b) => a.year - b.year);
+  }
+
+  return {
+    feed: mapToSeries(results[0]),
+    fertilizer: mapToSeries(results[1]),
+    fuel: mapToSeries(results[2]),
   };
 }
 
