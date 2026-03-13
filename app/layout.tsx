@@ -15,7 +15,7 @@ const dmSerif = DM_Serif_Display({
 });
 
 export const metadata: Metadata = {
-  title: "Bondens Pris — Hva får bonden betalt?",
+  title: "Bonde vs Butikk — Hvem får mest?",
   description:
     "Se hva norske bønder får betalt for råvarene sine, og sammenlign med prisveksten de siste 40 årene.",
 };
