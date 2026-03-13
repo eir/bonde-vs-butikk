@@ -19,6 +19,9 @@ export function FarmerShareBar({ data }: Props) {
       <h3 className="text-lg font-semibold">
         Bondens andel av butikkprisen for {product.name.toLowerCase()}
       </h3>
+      <p className="text-xs text-muted-foreground">
+        Basert på anslått butikkpris og beregnet produsentpris — de faktiske tallene varierer.
+      </p>
       <div
         className="flex h-12 w-full overflow-hidden rounded-lg text-sm font-medium"
         role="img"
@@ -38,16 +41,15 @@ export function FarmerShareBar({ data }: Props) {
         </div>
       </div>
       <p className="text-xs text-muted-foreground">
-        Av butikkprisen på ca.{" "}
+        Av en anslått butikkpris på ca.{" "}
         {lastPoint.retailPrice?.toLocaleString("nb-NO", {
           maximumFractionDigits: 0,
         })}{" "}
-        kr/{product.unit} går ca.{" "}
+        kr/{product.unit} får bonden bare{" "}
         {lastPoint.producerPrice.toLocaleString("nb-NO", {
           maximumFractionDigits: 2,
         })}{" "}
-        kr til bonden. Resten dekker foredling, transport, emballasje og
-        butikkens påslag.
+        kr. Resten går til bearbeiding, transport, emballasje og butikkens påslag.
       </p>
     </div>
   );

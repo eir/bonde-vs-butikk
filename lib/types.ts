@@ -15,6 +15,8 @@ export type Product = {
   referenceYear: number;
   /** Emoji-ikon */
   icon: string;
+  /** Merknad om at indeksen deles med andre produkter */
+  indexNote?: string;
 };
 
 /** Et enkelt datapunkt i tidsserien */
@@ -62,6 +64,16 @@ export type FarmStats = {
   debtPerFarmer: { year: number; value: number }[];
   /** Netto næringsinntekt fra jordbruk (kr) per år */
   farmIncome: { year: number; value: number }[];
+};
+
+/** Bondens innsatskostnader — prisindekser for fôr, gjødsel, drivstoff */
+export type FarmInputCosts = {
+  /** Dyrefor (SITC08) — prisindeks per år */
+  feed: { year: number; value: number }[];
+  /** Rå gjødningsstoffer (SITC27) — prisindeks per år */
+  fertilizer: { year: number; value: number }[];
+  /** Mineralolje/drivstoff (SITC33) — prisindeks per år */
+  fuel: { year: number; value: number }[];
 };
 
 /** Rå JSON-stat2-respons fra SSB (forenklet) */

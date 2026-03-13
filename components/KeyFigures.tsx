@@ -27,17 +27,17 @@ export function KeyFigures({ data }: Props) {
     {
       label: `Bonden får i dag`,
       value: formatPriceUnit(data.currentPrice, product.unit),
-      description: `Produsentpris per ${product.unit} (${endYear})`,
+      description: `Per ${product.unit} (${endYear})`,
     },
     {
-      label: `Produsentpris`,
+      label: `Bondens pris`,
       value: formatPercent(data.priceChangePercent),
-      description: `Endring siden ${startYear}`,
+      description: `Så mye mer får bonden siden ${startYear}`,
     },
     {
-      label: `Generell inflasjon (KPI)`,
+      label: `Generell prisvekst`,
       value: formatPercent(data.cpiChangePercent),
-      description: `Prisvekst i samfunnet siden ${startYear}`,
+      description: `Så mye har prisene ellers steget siden ${startYear}`,
     },
   ];
 
@@ -45,12 +45,12 @@ export function KeyFigures({ data }: Props) {
   if (data.retailChangePercent != null && data.currentRetailPrice != null) {
     const retailVsCpi = data.retailChangePercent - data.cpiChangePercent;
     figures.push({
-      label: `Butikkpris`,
+      label: `Butikkpris (anslag)`,
       value: formatPercent(data.retailChangePercent),
       description:
         retailVsCpi > 5
-          ? `Butikkprisen har steget ${retailVsCpi.toFixed(0)} % mer enn inflasjonen — nå ca. ${formatPriceUnit(data.currentRetailPrice, product.unit)}`
-          : `Endring i butikkpris siden ${startYear} — nå ca. ${formatPriceUnit(data.currentRetailPrice, product.unit)}`,
+          ? `Steget ${retailVsCpi.toFixed(0)} % mer enn den generelle prisveksten — du betaler nå ca. ${formatPriceUnit(data.currentRetailPrice, product.unit)}`
+          : `Endring siden ${startYear} — du betaler nå ca. ${formatPriceUnit(data.currentRetailPrice, product.unit)}`,
       highlight: retailVsCpi > 5 ? "danger" : false,
     });
   }
@@ -62,21 +62,23 @@ export function KeyFigures({ data }: Props) {
       value: `${data.farmerSharePercent.toFixed(0)} %`,
       description:
         data.farmerSharePercent < 35
-          ? `Bare ${data.farmerSharePercent.toFixed(0)} øre av hver krone i butikken går til bonden`
-          : `Av det du betaler i butikken, går dette til bonden`,
+          ? `Bare ${data.farmerSharePercent.toFixed(0)} øre av hver krone du betaler i butikken går til bonden`
+          : `Så mye av det du betaler i butikken går til bonden`,
       highlight: data.farmerSharePercent < 35 ? "warning" : false,
     });
   }
 
-  // Differanse mellom produsentpris og inflasjon
-  figures.push({
-    label: `Hadde fulgt inflasjonen`,
-    value: formatPriceUnit(data.hypotheticalPrice, product.unit),
-    description:
-      data.gapKr > 0
-        ? `Bonden får ${formatKr(data.gapKr)} mindre per ${product.unit} enn inflasjonen tilsier`
-        : `Bonden får ${formatKr(Math.abs(data.gapKr))} mer enn inflasjonen tilsier`,
-  });
+  // Differanse mellom faktisk pris og inflasjon — beregn for både bonde og butikk
+  const firstPoint = timeSeries[0];
+  const lastPoint = timeSeries[timeSeries.length - 1];
+  const hasRetailGap =
+    firstPoint.retailPrice != null && lastPoint.retailPrice != null && firstPoint.cpiIndex > 0;
+  const hypotheticalRetailPrice = hasRetailGap
+    ? firstPoint.retailPrice! * (lastPoint.cpiIndex / firstPoint.cpiIndex)
+    : null;
+  const retailGapKr = hasRetailGap
+    ? Math.round((lastPoint.retailPrice! - hypotheticalRetailPrice!) * 100) / 100
+    : null;
 
   return (
     <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
@@ -102,6 +104,53 @@ export function KeyFigures({ data }: Props) {
           </CardContent>
         </Card>
       ))}
+
+      {/* Sammenligning: bonde vs. butikk mot generell prisvekst */}
+      <Card className="sm:col-span-2 lg:col-span-3">
+        <CardContent className="p-4">
+          <p className="text-sm font-medium text-muted-foreground">
+            Hvis prisene hadde fulgt den generelle prisveksten
+          </p>
+          <div className="mt-3 grid gap-4 sm:grid-cols-2">
+            {/* Bonden */}
+            <div className="rounded-md bg-[var(--chart-1)]/10 px-4 py-3">
+              <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                Bonden
+              </p>
+              <p className="mt-1 text-xl font-bold text-[var(--chart-1)]">
+                {data.gapKr > 0 ? "−" : "+"}{formatKr(Math.abs(data.gapKr))}/{product.unit}
+              </p>
+              <p className="mt-1 text-xs text-muted-foreground">
+                {data.gapKr > 0
+                  ? `Bonden får ${formatKr(data.gapKr)} mindre enn prisveksten tilsier`
+                  : `Bonden får ${formatKr(Math.abs(data.gapKr))} mer enn prisveksten tilsier`}
+              </p>
+              <p className="mt-2 text-xs text-muted-foreground/70">
+                Ville vært {formatPriceUnit(data.hypotheticalPrice, product.unit)} — er {formatPriceUnit(data.currentPrice, product.unit)}
+              </p>
+            </div>
+            {/* Butikken */}
+            {retailGapKr != null && hypotheticalRetailPrice != null && (
+              <div className="rounded-md bg-[var(--chart-3)]/10 px-4 py-3">
+                <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                  Butikken (anslag)
+                </p>
+                <p className="mt-1 text-xl font-bold text-[var(--chart-3)]">
+                  {retailGapKr > 0 ? "+" : "−"}{formatKr(Math.abs(retailGapKr))}/{product.unit}
+                </p>
+                <p className="mt-1 text-xs text-muted-foreground">
+                  {retailGapKr > 0
+                    ? `Butikkprisen har steget ${formatKr(retailGapKr)} mer enn prisveksten tilsier`
+                    : `Butikkprisen har steget ${formatKr(Math.abs(retailGapKr))} mindre enn prisveksten tilsier`}
+                </p>
+                <p className="mt-2 text-xs text-muted-foreground/70">
+                  Ville vært {formatPriceUnit(Math.round(hypotheticalRetailPrice * 100) / 100, product.unit)} — er ca. {formatPriceUnit(lastPoint.retailPrice!, product.unit)}
+                </p>
+              </div>
+            )}
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 }

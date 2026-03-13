@@ -16,9 +16,10 @@ import { formatKr } from "@/lib/format";
 type Props = {
   data: PricePoint[];
   unit: string;
+  indexNote?: string;
 };
 
-export function PriceChart({ data, unit }: Props) {
+export function PriceChart({ data, unit, indexNote }: Props) {
   if (data.length === 0) {
     return (
       <p className="py-12 text-center text-muted-foreground">
@@ -82,7 +83,7 @@ export function PriceChart({ data, unit }: Props) {
             stroke="var(--chart-1)"
             strokeWidth={2.5}
             dot={false}
-            name="Produsentpris (bonden får)"
+            name="Bondens pris"
           />
           <Line
             type="monotone"
@@ -91,7 +92,7 @@ export function PriceChart({ data, unit }: Props) {
             strokeWidth={2}
             strokeDasharray="6 3"
             dot={false}
-            name="Hadde fulgt inflasjonen"
+            name="Hvis prisveksten hadde vært lik"
           />
           <Line
             type="monotone"
@@ -107,6 +108,11 @@ export function PriceChart({ data, unit }: Props) {
         Kilde: SSB tabell 03675 (produsentprisindeks) og 03013 (KPI). Basisår
         2021=100.
       </p>
+      {indexNote && (
+        <p className="mt-1 text-center text-xs text-amber-700">
+          {indexNote}
+        </p>
+      )}
     </div>
   );
 }

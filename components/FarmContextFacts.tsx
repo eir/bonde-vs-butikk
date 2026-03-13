@@ -123,7 +123,7 @@ export function FarmContextFacts({ farmStats }: Props) {
     <section aria-label="Jordbruket i tall" className="space-y-4">
       <h2 className="text-xl">Jordbruket i tall</h2>
       <p className="text-sm text-muted-foreground">
-        Nøkkeltall som viser situasjonen for norske bønder — oppdatert fra SSB.
+        Tall som viser hvordan norske bønder har det — hentet fra SSB.
       </p>
 
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
@@ -133,8 +133,8 @@ export function FarmContextFacts({ farmStats }: Props) {
             title="Aktive gårdsbruk"
             figure={latestFarms ? formatThousands(latestFarms.value) : "—"}
             label={`i ${latestFarms?.year ?? "?"}`}
-            detail="Siden år 2000 er antallet nesten halvert. Det tilsvarer omtrent 4 gårdsbruk som legges ned hver dag."
-            source="SSB tabell 11582"
+            detail="Siden år 2000 er antallet nesten halvert — omtrent 4 bruk forsvinner som selvstendige enheter hver dag, de fleste gjennom sammenslåing."
+            source="SSB tabell 11582 (jordbruksbedrifter)"
             data={farmStats.farmCount}
             color="#e76f51"
             trend="down"
@@ -150,8 +150,8 @@ export function FarmContextFacts({ farmStats }: Props) {
                 : "—"
             }
             label={`gjennomsnitt i ${latestDebt?.year ?? "?"}`}
-            detail="Gjelden per gårdsbruk har femdoblet seg siden 1999. Investeringskravene øker, men inntektene henger ikke med."
-            source="SSB tabell 09823"
+            detail="Gjelden per gård er fem ganger høyere enn i 1999. Bøndene må investere mer, men tjener ikke tilsvarende mer."
+            source="SSB tabell 09823 (gjennomsnittlig gjeld, jordbruksbedrifter)"
             data={farmStats.debtPerFarmer}
             color="#d62828"
             trend="up"
@@ -167,8 +167,8 @@ export function FarmContextFacts({ farmStats }: Props) {
                 : "—"
             }
             label={`per bonde i ${latestIncome?.year ?? "?"}`}
-            detail="Netto næringsinntekt fra jordbruk alene. 90 % av bøndene må ha annen inntekt ved siden av gårdsdriften."
-            source="SSB tabell 05038"
+            detail="Det bonden sitter igjen med fra gårdsdriften. 9 av 10 bønder må ha jobb ved siden av for å klare seg."
+            source="SSB tabell 05038 (netto næringsinntekt, jordbruk)"
             data={farmStats.farmIncome}
             color="#2a9d8f"
             trend="flat"
@@ -178,16 +178,16 @@ export function FarmContextFacts({ farmStats }: Props) {
         {/* Statiske fakta */}
         <StaticCard
           figure="96,6 %"
-          label="kontrollert av tre kjeder"
-          detail="NorgesGruppen, Coop og Rema kontrollerer nesten hele dagligvaremarkedet. De eier også grossist, distribusjon og eiendom — og kan flytte overskudd mellom leddene."
-          source="NHO / Konkurransetilsynet"
+          label="kontrollert av tre kjeder (2023)"
+          detail="NorgesGruppen, Coop og Rema styrer nesten hele dagligvaremarkedet. De eier også lagrene, transporten og eiendommene — og har stor makt over hva bonden får betalt."
+          source="Dagligvaretilsynet, Rapport om konkurransen i dagligvaremarkedet (2024)"
         />
 
         <StaticCard
-          figure="< 40 %"
-          label="selvforsyningsgrad"
-          detail="Norge produserer bare nok mat til å brødfø 2 av 5 nordmenn. Kjedenes egne merkevarer erstatter i økende grad norske produkter med import."
-          source="Helsedirektoratet"
+          figure="ca. 36 %"
+          label="selvforsyningsgrad (korrigert for importert fôr)"
+          detail="Korrigert for at mye dyrefôr importeres, produserer Norge mat tilsvarende drøyt en tredel av forbruket. Uten denne korreksjonen er tallet rundt 45 %."
+          source="NIBIO / Budsjettnemnda for jordbruket, Totalkalkylen (2023)"
         />
       </div>
     </section>

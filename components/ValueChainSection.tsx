@@ -57,7 +57,7 @@ export function ValueChainSection({ data }: Props) {
       {/* Visuell fordeling — nåtid */}
       <div className="rounded-lg border bg-card p-4">
         <p className="mb-3 text-sm text-muted-foreground">
-          Når du betaler{" "}
+          Når du betaler anslagsvis{" "}
           <span className="font-semibold text-foreground">
             {formatPriceUnit(retailKr, product.unit)}
           </span>{" "}
@@ -160,7 +160,7 @@ export function ValueChainSection({ data }: Props) {
             <Legend
               wrapperStyle={{ fontSize: "0.875rem", paddingTop: "0.5rem" }}
               formatter={(value: string) =>
-                value === "bonden" ? "Til bonden" : "Mellomledd (foredling, transport, butikk)"
+                value === "bonden" ? "Til bonden" : "Mellomledd (anslag — foredling, transport, butikk)"
               }
             />
             <Area
@@ -182,8 +182,8 @@ export function ValueChainSection({ data }: Props) {
           </AreaChart>
         </ResponsiveContainer>
         <p className="mt-2 text-xs text-muted-foreground">
-          Mellomleddet inkluderer meieri/slakteri, grossist (f.eks. ASKO),
-          distribusjon, og butikkens påslag. Ofte kontrollert av samme konsern.
+          Mellomleddet er alt som skjer mellom bonden og butikkhyllen:
+          meieri eller slakteri, lager, transport og butikkens påslag. Ofte eid av samme selskap.
         </p>
       </div>
     </section>

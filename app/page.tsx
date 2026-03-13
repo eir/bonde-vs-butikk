@@ -1,8 +1,8 @@
 import { products } from "@/lib/products";
-import { fetchProducerPriceIndex, fetchTotalCPI, fetchCPI, fetchFarmStats } from "@/lib/ssb";
+import { fetchProducerPriceIndex, fetchTotalCPI, fetchCPI, fetchFarmStats, fetchFarmInputCosts } from "@/lib/ssb";
 import { buildTimeSeries } from "@/lib/calculations";
 import { DashboardClient } from "@/components/DashboardClient";
-import type { ProductData, FarmStats } from "@/lib/types";
+import type { ProductData, FarmStats, FarmInputCosts } from "@/lib/types";
 
 export const revalidate = 86400; // Oppdater data daglig
 
@@ -35,10 +35,14 @@ async function getAllProductData(): Promise<Record<string, ProductData>> {
 }
 
 export default async function Home() {
-  const [allData, farmStats] = await Promise.all([
+  const [allData, farmStats, inputCosts] = await Promise.all([
     getAllProductData(),
     fetchFarmStats().catch((err) => {
       console.error("Feil ved henting av jordbruksstatistikk:", err);
+      return null;
+    }),
+    fetchFarmInputCosts().catch((err) => {
+      console.error("Feil ved henting av kostnadsdata:", err);
       return null;
     }),
   ]);
@@ -48,12 +52,12 @@ export default async function Home() {
       <header className="mb-8 text-center">
         <h1 className="text-3xl sm:text-4xl">Bonde vs Butikk — Hvem får mest?</h1>
         <p className="mt-3 text-lg text-muted-foreground">
-          Sammenlign produsentpriser med prisveksten de siste 40 årene — og se
-          hvor mye av butikkprisen som faktisk går til bonden.
+          Se hva bonden faktisk får betalt — og hvor mye av butikkprisen
+          som forsvinner på veien.
         </p>
       </header>
 
-      <DashboardClient allData={allData} farmStats={farmStats} />
+      <DashboardClient allData={allData} farmStats={farmStats} inputCosts={inputCosts} />
 
       <footer className="mt-12 border-t pt-6 text-center text-xs text-muted-foreground">
         <p>

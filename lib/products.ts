@@ -4,11 +4,15 @@ import type { Product } from "./types";
  * Produktkonfigurasjon.
  *
  * referencePrice = produsentpris i referanseåret (kr/enhet).
- * retailReferencePrice = butikkpris i referanseåret (kr/enhet).
- * referenceYear = 2021 (basisår for SSB indeks 03675, 2021=100).
+ *   Kilde: Totalkalkylen 2021 (NIBIO/Budsjettnemnda for jordbruket).
+ *   Melk: utbetalingspris, Kjøtt: gjennomsnittlig engrospris,
+ *   Hvete: gjennomsnittlig kornpris, Egg: noteringspris, Poteter: engrospris.
  *
- * Kilder: Totalkalkylen (NIBIO), Landbruksdirektoratet, SSB.
- * Prisene er omtrentlige og brukes for å konvertere indekstall til kroneverdi.
+ * retailReferencePrice = anslått butikkpris i referanseåret (kr/enhet).
+ *   Kilde: SSBs konsumprisstatistikk og stikkprøver fra dagligvarehandelen (2021).
+ *   Disse er omtrentlige — faktiske butikkpriser varierer mellom kjeder og regioner.
+ *
+ * referenceYear = 2021 (basisår for SSB indeks 03675, 2021=100).
  */
 export const products: Product[] = [
   {
@@ -21,6 +25,7 @@ export const products: Product[] = [
     retailReferencePrice: 19.9,
     referenceYear: 2021,
     icon: "🥛",
+    indexNote: "Prisindeksen dekker meierivarer og egg samlet (SITC 02) — ikke bare melk.",
   },
   {
     id: "hvete",
@@ -32,6 +37,7 @@ export const products: Product[] = [
     retailReferencePrice: 25.0,
     referenceYear: 2021,
     icon: "🌾",
+    indexNote: "Produsentprisen er for korn. Butikkprisen er anslått for mel, som er et bearbeidet produkt — direkte sammenligning er upresis.",
   },
   {
     id: "storfe",
@@ -43,6 +49,7 @@ export const products: Product[] = [
     retailReferencePrice: 200.0,
     referenceYear: 2021,
     icon: "🐄",
+    indexNote: "Prisindeksen dekker kjøtt og kjøttvarer samlet (SITC 01) — ikke bare storfe. Pristrenden er derfor lik for svinekjøtt.",
   },
   {
     id: "svin",
@@ -54,6 +61,7 @@ export const products: Product[] = [
     retailReferencePrice: 120.0,
     referenceYear: 2021,
     icon: "🐷",
+    indexNote: "Prisindeksen dekker kjøtt og kjøttvarer samlet (SITC 01) — ikke bare svin. Pristrenden er derfor lik for storfekjøtt.",
   },
   {
     id: "egg",
@@ -65,6 +73,7 @@ export const products: Product[] = [
     retailReferencePrice: 45.0,
     referenceYear: 2021,
     icon: "🥚",
+    indexNote: "Prisindeksen dekker meierivarer og egg samlet (SITC 02) — ikke bare egg.",
   },
   {
     id: "poteter",

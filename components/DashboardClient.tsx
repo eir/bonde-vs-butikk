@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import type { ProductData, PricePoint, FarmStats } from "@/lib/types";
+import type { ProductData, PricePoint, FarmStats, FarmInputCosts } from "@/lib/types";
 import { products } from "@/lib/products";
 import { farmerShare } from "@/lib/calculations";
 import { ProductSelector } from "./ProductSelector";
@@ -12,11 +12,13 @@ import { KeyFigures } from "./KeyFigures";
 import { FarmerShareBar } from "./FarmerShareBar";
 import { ValueChainSection } from "./ValueChainSection";
 import { FarmContextFacts } from "./FarmContextFacts";
+import { FarmCostTrends } from "./FarmCostTrends";
 import { MethodNote } from "./MethodNote";
 
 type Props = {
   allData: Record<string, ProductData>;
   farmStats: FarmStats | null;
+  inputCosts: FarmInputCosts | null;
 };
 
 function round2(n: number): number {
@@ -100,7 +102,7 @@ function recalculate(
   };
 }
 
-export function DashboardClient({ allData, farmStats }: Props) {
+export function DashboardClient({ allData, farmStats, inputCosts }: Props) {
   const [selectedId, setSelectedId] = useState(products[0].id);
   const [selectedYears, setSelectedYears] = useState<number | null>(null);
   const rawData = allData[selectedId];
@@ -136,7 +138,7 @@ export function DashboardClient({ allData, farmStats }: Props) {
             <div className="flex flex-col gap-6 lg:flex-row">
               {/* Diagram — tar mesteparten av plassen */}
               <div className="min-w-0 flex-1">
-                <PriceChart data={data.timeSeries} unit={data.product.unit} />
+                <PriceChart data={data.timeSeries} unit={data.product.unit} indexNote={data.product.indexNote} />
               </div>
               {/* Sammendrag — ved siden av på desktop, under på mobil */}
               <div className="w-full shrink-0 rounded-lg border bg-card p-5 lg:w-64">
@@ -165,6 +167,8 @@ export function DashboardClient({ allData, farmStats }: Props) {
       )}
 
       {/* Kontekst — uavhengig av valgt produkt */}
+      <FarmCostTrends inputCosts={inputCosts} />
+
       <FarmContextFacts farmStats={farmStats} />
 
       <MethodNote />

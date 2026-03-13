@@ -31,12 +31,12 @@ export function PriceSummary({ data }: Props) {
         <div className="rounded-md border-l-4 border-red-500 bg-red-50 px-3 py-2">
           <p className="text-sm font-semibold text-red-900">
             Butikkprisen har steget {retailVsCpi.toFixed(0)} % mer
-            enn inflasjonen siden {startYear}
+            enn den generelle prisveksten siden {startYear}
           </p>
           {retailVsProducer < -5 && (
             <p className="mt-1 text-xs text-red-800">
-              Mens produsentprisen har steget {Math.abs(retailVsProducer).toFixed(0)} %
-              {" "}mindre enn butikkprisen
+              Bonden har bare fått {Math.abs(retailVsProducer).toFixed(0)} %
+              {" "}mindre i økning enn butikken
             </p>
           )}
         </div>
@@ -46,7 +46,7 @@ export function PriceSummary({ data }: Props) {
       {hasRetail && (
         <div className="rounded-md bg-primary/5 p-3">
           <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
-            Du betaler i butikken
+            Anslått butikkpris
           </p>
           <p className="text-2xl font-bold text-[var(--chart-3)]">
             {formatPriceUnit(data.currentRetailPrice!, product.unit)}
@@ -66,7 +66,7 @@ export function PriceSummary({ data }: Props) {
 
           {markup && (
             <p className="mt-2 text-sm font-medium text-accent">
-              Butikkprisen er {markup}× produsentprisen
+              Du betaler {markup} ganger det bonden får
             </p>
           )}
         </div>
@@ -101,21 +101,21 @@ export function PriceSummary({ data }: Props) {
           Prisendring siden {startYear}
         </p>
         <div className="flex items-center justify-between">
-          <span className="text-muted-foreground">Produsentpris</span>
+          <span className="text-muted-foreground">Bondens pris</span>
           <span className="font-semibold text-[var(--chart-1)]">
             {formatPercent(data.priceChangePercent)}
           </span>
         </div>
         {data.retailChangePercent != null && (
           <div className="flex items-center justify-between">
-            <span className="text-muted-foreground">Butikkpris</span>
+            <span className="text-muted-foreground">Butikkpris (anslag)</span>
             <span className="font-semibold text-[var(--chart-3)]">
               {formatPercent(data.retailChangePercent)}
             </span>
           </div>
         )}
         <div className="flex items-center justify-between">
-          <span className="text-muted-foreground">Inflasjon</span>
+          <span className="text-muted-foreground">Generell prisvekst</span>
           <span className="font-semibold text-[var(--chart-2)]">
             {formatPercent(data.cpiChangePercent)}
           </span>
