@@ -2,44 +2,53 @@
 
 import { cn } from "@/lib/utils";
 
-export type TimeRange = {
-  label: string;
-  years: number | null; // null = vis alt
+type Props = {
+  minYear: number;
+  maxYear: number;
+  fromYear: number;
+  onFromYearChange: (year: number) => void;
 };
 
-const ranges: TimeRange[] = [
-  { label: "5 år", years: 5 },
-  { label: "10 år", years: 10 },
-  { label: "15 år", years: 15 },
-  { label: "20 år", years: 20 },
-  { label: "30 år", years: 30 },
-  { label: "Alt", years: null },
+const presets = [
+  { label: "1 år", yearsBack: 1 },
+  { label: "5 år", yearsBack: 5 },
+  { label: "10 år", yearsBack: 10 },
+  { label: "20 år", yearsBack: 20 },
+  { label: "30 år", yearsBack: 30 },
+  { label: "Alt", yearsBack: null },
 ];
 
-type Props = {
-  selectedYears: number | null;
-  onSelect: (years: number | null) => void;
-};
-
-export function TimeRangeSelector({ selectedYears, onSelect }: Props) {
+export function TimeRangeSelector({
+  minYear,
+  maxYear,
+  fromYear,
+  onFromYearChange,
+}: Props) {
   return (
-    <div className="flex flex-wrap gap-1.5" role="group" aria-label="Velg tidsperiode">
-      {ranges.map((r) => (
-        <button
-          key={r.label}
-          onClick={() => onSelect(r.years)}
-          className={cn(
-            "rounded-full border px-3 py-1 text-sm transition-colors",
-            "hover:border-primary/50 hover:bg-primary/5",
-            "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary",
-            selectedYears === r.years
-              ? "border-primary bg-primary text-primary-foreground"
-              : "border-border bg-card text-foreground"
-          )}
-        >
-          {r.label}
-        </button>
-      ))}
+    <div
+      className="inline-flex items-center rounded-lg border border-border bg-muted/50 p-0.5"
+      role="group"
+      aria-label="Velg tidsperiode"
+    >
+      {presets.map((p) => {
+        const targetYear = p.yearsBack != null ? maxYear - p.yearsBack : minYear;
+        const isActive = fromYear === targetYear;
+        return (
+          <button
+            key={p.label}
+            onClick={() => onFromYearChange(targetYear)}
+            className={cn(
+              "rounded-md px-2.5 py-1 text-xs font-medium transition-colors",
+              "focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-primary",
+              isActive
+                ? "bg-primary text-primary-foreground shadow-sm"
+                : "text-muted-foreground hover:text-foreground"
+            )}
+          >
+            {p.label}
+          </button>
+        );
+      })}
     </div>
   );
 }

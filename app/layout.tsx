@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist } from "next/font/google";
 import { DM_Serif_Display } from "next/font/google";
+import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 
 const geist = Geist({
@@ -29,6 +30,7 @@ export default function RootLayout({
     <html lang="nb">
       <body className={`${geist.variable} ${dmSerif.variable} antialiased`}>
         {children}
+        <Analytics />
       </body>
     </html>
   );

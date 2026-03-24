@@ -28,15 +28,14 @@ function round2(n: number): number {
 /** Filtrer tidsserie og beregn nøkkeltall for valgt periode */
 function filterByRange(
   data: ProductData,
-  years: number | null
+  fromYear: number
 ): ProductData {
-  if (years == null) return data;
-
   const allPoints = data.timeSeries;
   if (allPoints.length === 0) return data;
 
-  const lastYear = allPoints[allPoints.length - 1].year;
-  const fromYear = lastYear - years;
+  const minYear = allPoints[0].year;
+  if (fromYear <= minYear) return data;
+
   const filtered = allPoints.filter((p) => p.year >= fromYear);
   if (filtered.length < 2) return data;
 
@@ -104,12 +103,26 @@ function recalculate(
 
 export function DashboardClient({ allData, farmStats, inputCosts }: Props) {
   const [selectedId, setSelectedId] = useState(products[0].id);
-  const [selectedYears, setSelectedYears] = useState<number | null>(null);
   const rawData = allData[selectedId];
 
+  // Finn min/maks år på tvers av alle produkter
+  const { minYear, maxYear } = useMemo(() => {
+    let min = Infinity;
+    let max = -Infinity;
+    for (const pd of Object.values(allData)) {
+      if (pd.timeSeries.length > 0) {
+        min = Math.min(min, pd.timeSeries[0].year);
+        max = Math.max(max, pd.timeSeries[pd.timeSeries.length - 1].year);
+      }
+    }
+    return { minYear: min === Infinity ? 1979 : min, maxYear: max === -Infinity ? 2025 : max };
+  }, [allData]);
+
+  const [fromYear, setFromYear] = useState(maxYear - 5);
+
   const data = useMemo(
-    () => (rawData ? filterByRange(rawData, selectedYears) : undefined),
-    [rawData, selectedYears]
+    () => (rawData ? filterByRange(rawData, fromYear) : undefined),
+    [rawData, fromYear]
   );
 
   return (
@@ -120,11 +133,13 @@ export function DashboardClient({ allData, farmStats, inputCosts }: Props) {
         onSelect={setSelectedId}
       />
 
-      <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-        <span className="text-sm text-muted-foreground">Tidsperiode:</span>
+      <div className="flex items-center justify-end gap-3">
+        <span className="text-sm text-muted-foreground">Velg tidsperiode:</span>
         <TimeRangeSelector
-          selectedYears={selectedYears}
-          onSelect={setSelectedYears}
+          minYear={minYear}
+          maxYear={maxYear}
+          fromYear={fromYear}
+          onFromYearChange={setFromYear}
         />
       </div>
 

@@ -6,7 +6,7 @@ import type { ProductData, FarmStats, FarmInputCosts } from "@/lib/types";
 
 export const revalidate = 86400; // Oppdater data daglig
 
-const FROM_YEAR = 1985;
+const FROM_YEAR = 1979;
 
 async function getAllProductData(): Promise<Record<string, ProductData>> {
   const totalCPI = await fetchTotalCPI(FROM_YEAR);
