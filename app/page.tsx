@@ -2,7 +2,7 @@ import { products } from "@/lib/products";
 import { fetchProducerPriceIndex, fetchTotalCPI, fetchCPI, fetchFarmStats, fetchFarmInputCosts } from "@/lib/ssb";
 import { buildTimeSeries } from "@/lib/calculations";
 import { DashboardClient } from "@/components/DashboardClient";
-import type { ProductData, FarmStats, FarmInputCosts } from "@/lib/types";
+import type { ProductData } from "@/lib/types";
 
 export const revalidate = 86400; // Oppdater data daglig
 

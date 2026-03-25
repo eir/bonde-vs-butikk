@@ -59,7 +59,6 @@ function CostCard({ title, data, color, detail }: CostCardProps) {
   if (pct == null || data.length < 2) return null;
 
   const first = data[0];
-  const last = data[data.length - 1];
 
   return (
     <Card>
